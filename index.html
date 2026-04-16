@@ -12,12 +12,12 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
-/* ── Theme: Dark (default) ── */
+/* ── Theme: Dark (default) — neutral dark grey ── */
 :root, :root.theme-dark {
-  --bg:#060d1e;--surface:#0d1530;--surface2:#111b38;--surface3:#1a2547;
-  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --bg:#0a0a0e;--surface:#141418;--surface2:#1a1a20;--surface3:#242428;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
   --cyan:#00d4ff;--green:#10b981;--red:#ef4444;--amber:#f59e0b;--purple:#8b5cf6;--blue:#3b82f6;
-  --text:#f1f5f9;--muted:#64748b;--dim:#374151;
+  --text:#e8e8ec;--muted:#6b6b78;--dim:#3a3a44;
   --safe-top:env(safe-area-inset-top,0px);
   --safe-bottom:env(safe-area-inset-bottom,0px);
   --font-scale:1;
@@ -63,8 +63,8 @@
   font-family: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible', system-ui, sans-serif;
 }
 
-/* ── Font scale ── */
-body { font-size: calc(14px * var(--font-scale)); }
+/* ── Font scale — uses zoom since dashboard uses hardcoded px sizes ── */
+body { zoom: var(--font-scale); }
 
 /* ── Motion ── */
 :root.motion-reduced *{transition-duration:0.01ms!important;animation-duration:0.01ms!important}
@@ -83,7 +83,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 /* ── Sticky header ── */
 .topbar{
   position:sticky;top:0;z-index:100;
-  background:rgba(6,13,30,0.92);backdrop-filter:blur(16px);
+  background:rgba(10,10,14,0.92);backdrop-filter:blur(16px);
   border-bottom:1px solid var(--border);
   padding:calc(12px + var(--safe-top)) 16px 12px;
 }
@@ -233,7 +233,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 /* ── Bottom nav (mobile) ── */
 .bottom-nav{
   position:fixed;bottom:0;left:0;right:0;z-index:100;
-  background:rgba(6,13,30,0.95);backdrop-filter:blur(16px);
+  background:rgba(10,10,14,0.95);backdrop-filter:blur(16px);
   border-top:1px solid var(--border);
   padding:8px 0 calc(8px + var(--safe-bottom));
   display:flex;justify-content:space-around;
