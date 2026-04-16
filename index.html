@@ -6,18 +6,69 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Daedalus · ASX Portfolio</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/open-dyslexic" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
+
+/* ── Theme: Dark (default) ── */
+:root, :root.theme-dark {
   --bg:#060d1e;--surface:#0d1530;--surface2:#111b38;--surface3:#1a2547;
   --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
   --cyan:#00d4ff;--green:#10b981;--red:#ef4444;--amber:#f59e0b;--purple:#8b5cf6;--blue:#3b82f6;
   --text:#f1f5f9;--muted:#64748b;--dim:#374151;
   --safe-top:env(safe-area-inset-top,0px);
   --safe-bottom:env(safe-area-inset-bottom,0px);
+  --font-scale:1;
 }
+
+/* ── Theme: Light ── */
+:root.theme-light {
+  --bg:#f0f4f8;--surface:#ffffff;--surface2:#f8fafc;--surface3:#eef3f9;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);
+  --cyan:#0077aa;--green:#059669;--red:#dc2626;--amber:#d97706;--purple:#7c3aed;--blue:#2563eb;
+  --text:#0f172a;--muted:#475569;--dim:#94a3b8;
+}
+
+/* ── Theme: Deuteranopia (red/green-safe) ── */
+:root.theme-deuteranopia {
+  --bg:#0d0d14;--surface:#16162a;--surface2:#1c1c36;--surface3:#252542;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --cyan:#0088ee;--green:#e6b800;--red:#6688cc;--amber:#ccaa00;--purple:#5577aa;--blue:#0066cc;
+  --text:#f0f0e8;--muted:#8888a0;--dim:#555570;
+}
+
+/* ── Theme: Protanopia (red-blind safe) ── */
+:root.theme-protanopia {
+  --bg:#0d0e14;--surface:#14182a;--surface2:#1a1e36;--surface3:#222842;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --cyan:#0099bb;--green:#d9a800;--red:#5588aa;--amber:#bb9900;--purple:#446688;--blue:#0077aa;
+  --text:#f0f0e6;--muted:#808898;--dim:#505868;
+}
+
+/* ── Theme: Tritanopia (blue/yellow-safe) ── */
+:root.theme-tritanopia {
+  --bg:#14080e;--surface:#221018;--surface2:#2a1520;--surface3:#361c2a;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --cyan:#cc3366;--green:#cc5577;--red:#993355;--amber:#aa4466;--purple:#883355;--blue:#cc3366;
+  --text:#f5e8e8;--muted:#9a7880;--dim:#6a5058;
+}
+
+/* ── Font overrides ── */
+:root.font-dyslexic, :root.font-dyslexic *:not(.mono):not([class*="JetBrains"]) {
+  font-family: 'Open Dyslexic', 'OpenDyslexic', sans-serif !important;
+}
+:root.font-hyperlegible {
+  font-family: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible', system-ui, sans-serif;
+}
+
+/* ── Font scale ── */
+:root { font-size: calc(16px * var(--font-scale)); }
+
+/* ── Motion ── */
+:root.motion-reduced *{transition-duration:0.01ms!important;animation-duration:0.01ms!important}
+:root.motion-off *{transition:none!important;animation:none!important}
 html{scroll-behavior:smooth}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
 .mono{font-family:'JetBrains Mono',monospace!important}
@@ -214,6 +265,62 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 /* ── Strategy box ── */
 .strategy-box{background:var(--surface2);border-radius:10px;padding:12px 14px;font-size:12px;color:#94a3b8;line-height:1.6;margin-bottom:10px;border-left:3px solid var(--cyan)}
+
+/* ── Risk health ── */
+.risk-bar{display:flex;align-items:center;gap:12px;margin-bottom:14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;flex-wrap:wrap}
+.risk-score{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;line-height:1}
+.risk-meter{width:80px;height:6px;border-radius:3px;background:var(--surface3);overflow:hidden}
+.risk-meter-fill{height:100%;border-radius:3px;transition:width .5s}
+
+/* ── Alert card ── */
+.alert-card{background:var(--surface2);border-radius:8px;padding:10px 12px;margin-bottom:6px;border-left:3px solid;font-size:12px}
+.alert-card:last-child{margin-bottom:0}
+.alert-card.alert-warn{border-color:var(--amber)}
+.alert-card.alert-danger{border-color:var(--red)}
+.alert-card.alert-info{border-color:var(--cyan)}
+.alert-card.alert-profit{border-color:var(--green)}
+
+/* ── Technical indicator pill ── */
+.tech-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:12px;font-size:10px;font-weight:600;font-family:'JetBrains Mono',monospace}
+
+/* ── Calendar event ── */
+.cal-event{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px}
+.cal-event:last-child{border-bottom:none}
+.cal-date{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);white-space:nowrap}
+
+/* ── Insider alert ── */
+.insider-item{background:#ef444410;border-radius:8px;padding:10px 12px;margin-bottom:6px;border-left:3px solid var(--red);font-size:12px}
+.insider-item:last-child{margin-bottom:0}
+
+/* ── Sector bars ── */
+.sector-row{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:11px}
+.sector-name{width:80px;color:var(--muted);text-align:right;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sector-bar{flex:1;height:6px;border-radius:3px;background:var(--surface3);overflow:hidden}
+.sector-bar-fill{height:100%;border-radius:3px;transition:width .3s}
+
+/* ── Comfort panel ── */
+.comfort-btn{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface2);border:1px solid var(--border2);color:var(--muted);cursor:pointer;font-size:15px;transition:all .15s;flex-shrink:0}
+.comfort-btn:hover{color:var(--text);border-color:rgba(255,255,255,0.25);background:var(--surface3)}
+.comfort-panel{position:absolute;right:0;top:42px;z-index:300;width:300px;background:var(--surface);border:1px solid var(--border2);border-radius:16px;padding:18px;box-shadow:0 12px 40px rgba(0,0,0,0.4);animation:fadein .2s ease}
+.comfort-section{margin-bottom:14px}
+.comfort-legend{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;font-weight:600;margin-bottom:6px}
+.comfort-grid{display:grid;gap:4px}
+.comfort-opt{padding:6px 10px;border-radius:8px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .12s;text-align:center}
+.comfort-opt:hover{background:var(--surface2);color:var(--text)}
+.comfort-opt.active{border-color:var(--cyan);background:var(--surface2);color:var(--text);font-weight:600}
+.comfort-swatch{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);display:inline-block;vertical-align:middle;margin-right:4px}
+.comfort-opt.active .comfort-swatch{border-color:var(--cyan)}
+.comfort-range{width:100%;accent-color:var(--cyan);cursor:pointer}
+.comfort-reset{width:100%;text-align:center;font-size:10px;color:var(--muted);background:none;border:none;cursor:pointer;padding:6px 0;border-top:1px solid var(--border)}
+.comfort-reset:hover{color:var(--text);text-decoration:underline}
+
+/* ── Error expandable ── */
+.error-toggle{background:none;border:none;color:var(--amber);cursor:pointer;font-size:11px;font-weight:600;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:4px;padding:0}
+.error-toggle:hover{color:var(--text)}
+.error-list{margin-top:6px;padding-left:16px;font-size:11px;color:var(--muted);list-style:none}
+.error-list li{padding:3px 0;border-bottom:1px solid var(--border)}
+.error-list li:last-child{border-bottom:none}
+.error-list li::before{content:"·";color:var(--amber);margin-right:6px;font-weight:700}
 </style>
 </head>
 <body>
@@ -238,6 +345,37 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
         Run
       </button>
+      <div style="position:relative">
+        <button class="comfort-btn" onclick="toggleComfort()" id="comfortBtn" title="Comfort &amp; accessibility settings">⚙</button>
+        <div class="comfort-panel" id="comfortPanel" style="display:none">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <span style="font-weight:700;font-size:14px;color:var(--text)">Comfort</span>
+            <button onclick="toggleComfort()" style="background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;line-height:1">&times;</button>
+          </div>
+
+          <div class="comfort-section">
+            <div class="comfort-legend">Colour mode</div>
+            <div class="comfort-grid" style="grid-template-columns:repeat(5,1fr)" id="themeGrid"></div>
+          </div>
+
+          <div class="comfort-section">
+            <div class="comfort-legend">Font</div>
+            <div class="comfort-grid" style="grid-template-columns:repeat(3,1fr)" id="fontGrid"></div>
+          </div>
+
+          <div class="comfort-section">
+            <div class="comfort-legend">Text size — <span id="scaleLabel">100%</span></div>
+            <input type="range" min="0.8" max="1.5" step="0.05" value="1" class="comfort-range" id="fontScale" oninput="setComfort('fontScale',this.value)">
+          </div>
+
+          <div class="comfort-section">
+            <div class="comfort-legend">Motion</div>
+            <div class="comfort-grid" style="grid-template-columns:repeat(3,1fr)" id="motionGrid"></div>
+          </div>
+
+          <button class="comfort-reset" onclick="resetComfort()">Reset to defaults</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -278,10 +416,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <span class="health-label">Cycle Health</span>
     <div class="health-dots" id="healthDots"></div>
     <span id="healthText" style="font-size:11px;color:var(--muted)"></span>
+    <div id="errorIndicator" style="display:none;margin-left:8px">
+      <button class="error-toggle" onclick="toggleErrors()">
+        <span id="errorCountBadge" class="chip cr">0</span>
+        <span>errors</span>
+        <svg id="errorChevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="transition:transform .15s"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+    </div>
     <div style="margin-left:auto;display:flex;gap:6px">
       <button class="btn btn-green btn-sm" onclick="showAddFunds()">+ Add Funds</button>
       <button class="btn btn-amber btn-sm" onclick="showManualTrade()">Manual Trade</button>
     </div>
+  </div>
+  <div id="errorExpand" style="display:none;width:100%;margin-top:8px">
+    <ul class="error-list" id="errorList"></ul>
   </div>
 
   <!-- ── Performance Chart ── -->
@@ -293,12 +441,31 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="chart-box"><canvas id="perfChart"></canvas></div>
   </div>
 
+  <!-- ── Risk Health Bar ── -->
+  <div class="risk-bar section" id="sec-risk">
+    <div>
+      <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Portfolio Health</div>
+      <div id="riskScore" class="risk-score" style="color:var(--green)">—</div>
+    </div>
+    <div style="flex:1;min-width:120px">
+      <div class="risk-meter"><div id="riskMeterFill" class="risk-meter-fill" style="width:0%;background:var(--green)"></div></div>
+      <div id="riskLabel" style="font-size:10px;color:var(--muted);margin-top:3px">No data yet</div>
+    </div>
+    <div id="riskAlertsSummary" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+  </div>
+
+  <!-- ── Risk Alerts (trailing stops, take-profit, concentration) ── -->
+  <div class="card card-p section" id="sec-risk-alerts" style="display:none">
+    <div class="card-header">Risk Alerts</div>
+    <div id="riskAlertsBody"></div>
+  </div>
+
   <!-- ── Holdings + Pending ── -->
   <div class="g2 section" id="sec-holdings">
     <div class="card card-p">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
         <div class="card-header" style="margin-bottom:0">Holdings</div>
-        <span style="font-size:10px;color:var(--muted)">Stop-loss: <span id="slPct" class="mono" style="color:var(--amber)">6%</span></span>
+        <span style="font-size:10px;color:var(--muted)">SL: <span id="slPct" class="mono" style="color:var(--amber)">6%</span> · Trail: <span id="tsPct" class="mono" style="color:var(--amber)">10%</span> · Min: <span id="minShares" class="mono" style="color:var(--cyan)">50</span></span>
       </div>
       <div class="htable-scroll"><div id="holdingsBody"></div></div>
     </div>
@@ -320,6 +487,36 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     </div>
     <div id="analystMarket" style="font-size:12px;color:#94a3b8;margin-bottom:12px;line-height:1.6"></div>
     <div id="recsGrid" class="g3" style="margin-bottom:0"></div>
+  </div>
+
+  <!-- ── Technical Analysis ── -->
+  <div class="card card-p section" id="sec-technicals" style="display:none">
+    <div class="card-header">Technical Analysis · Yahoo Finance</div>
+    <div class="g2" style="margin-bottom:0">
+      <div>
+        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Buy-Low Signals (Oversold / Pullback)</div>
+        <div id="buyLowSignals"></div>
+      </div>
+      <div>
+        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Sell-High Signals (Overbought / Extended)</div>
+        <div id="sellHighSignals"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Earnings Calendar ── -->
+  <div class="card card-p section" id="sec-earnings" style="display:none">
+    <div class="card-header">Earnings Calendar · Upcoming Events</div>
+    <div id="earningsBody"></div>
+    <div id="earningsWarnings" style="margin-top:8px"></div>
+  </div>
+
+  <!-- ── Insider Selling ── -->
+  <div class="card card-p section" id="sec-insider" style="display:none">
+    <div class="card-header" style="display:flex;align-items:center;gap:6px">
+      <span style="color:var(--red)">⚠</span> Insider Selling Detected
+    </div>
+    <div id="insiderBody"></div>
   </div>
 
   <!-- ── News + Sentiment ── -->
@@ -373,14 +570,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <button class="bnav-item" onclick="scrollTo('sec-holdings')">
     <span class="bnav-icon">💼</span>Holdings
   </button>
+  <button class="bnav-item" onclick="scrollTo('sec-risk')">
+    <span class="bnav-icon">🛡️</span>Risk
+  </button>
   <button class="bnav-item" onclick="scrollTo('sec-analyst')">
     <span class="bnav-icon">🔍</span>Analyst
   </button>
   <button class="bnav-item" onclick="scrollTo('sec-news')">
     <span class="bnav-icon">📰</span>News
-  </button>
-  <button class="bnav-item" onclick="scrollTo('sec-logs')">
-    <span class="bnav-icon">📋</span>Logs
   </button>
 </nav>
 
@@ -528,10 +725,10 @@ function render(p) {
   $('sPos').textContent   = (p.holdings||[]).length;
   $('sPosSub').textContent = fmt$(invested) + ' invested';
 
-  // Stop-loss %
-  if (p.stopLossPct !== undefined) {
-    $('slPct').textContent = (p.stopLossPct * 100).toFixed(0) + '%';
-  }
+  // Risk config values
+  if (p.stopLossPct !== undefined) $('slPct').textContent = (p.stopLossPct * 100).toFixed(0) + '%';
+  if (p.trailingStopPct !== undefined) $('tsPct').textContent = (p.trailingStopPct * 100).toFixed(0) + '%';
+  if (p.minTradeShares !== undefined) $('minShares').textContent = p.minTradeShares;
 
   // Chart
   if (p.history && p.history.length >= 2) {
@@ -555,6 +752,25 @@ function render(p) {
   $('healthText').textContent = total_c
     ? `${streak} ✓ streak · ${total_c} cycles · ${errCount} errors`
     : 'No cycles run yet';
+
+  // Error indicator — pull from recent logs
+  const recentErrors = (p.logs || []).filter(l =>
+    l.type === 'STOP_LOSS' || l.type === 'REJECTED' ||
+    (l.title && (l.title.toLowerCase().includes('fail') || l.title.toLowerCase().includes('error'))) ||
+    (l.content && l.content.toLowerCase().includes('stop-loss'))
+  ).slice(0, 20);
+  // Also include trailing stop and cycle-level errors from cycleHealth
+  if (errCount > 0 || recentErrors.length > 0) {
+    $('errorIndicator').style.display = 'flex';
+    const displayCount = Math.max(errCount, recentErrors.length);
+    $('errorCountBadge').textContent = displayCount;
+    $('errorList').innerHTML = recentErrors.map(e =>
+      `<li><span style="color:var(--muted);font-size:9px">${e.ts ? fmtDate(e.ts) : ''}</span> <span style="color:var(--text)">${e.title || ''}</span>${e.content ? ` <span style="color:var(--dim)">— ${e.content.slice(0,80)}</span>` : ''}</li>`
+    ).join('') || `<li>Total errors across ${total_c} cycles: ${errCount}</li>`;
+  } else {
+    $('errorIndicator').style.display = 'none';
+    $('errorExpand').style.display = 'none';
+  }
 
   // Sentiment sparkline
   const sh = p.sentimentHistory || [];
@@ -669,6 +885,7 @@ function render(p) {
           ${r.catalyst ? `<div style="font-size:10px;color:var(--cyan);margin-bottom:4px">→ ${r.catalyst}</div>` : ''}
           <div style="font-size:10px;color:var(--muted)">${r.sector||''}${r.pe?' · P/E '+r.pe:''}${r.div?' · Div '+r.div:''}</div>
           ${r.risks?.length ? `<div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:3px">${r.risks.map(x=>chip(x,'cr')).join('')}</div>` : ''}
+          ${r.insiderActivity && r.insiderActivity !== 'none detected' ? `<div style="margin-top:6px;font-size:10px;color:var(--red);border-top:1px solid var(--border);padding-top:6px">⚠ Insider: ${r.insiderActivity}</div>` : ''}
         </div>`;
       }).join('');
 
@@ -707,6 +924,167 @@ function render(p) {
     }).join('') || '<div class="empty">No news items</div>';
   }
 
+  // ── Risk Health ──────────────────────────────────────────────────────────
+  const risk = p.lastRiskReport || {};
+  const hs = risk.healthScore;
+  if (hs !== undefined && hs !== null) {
+    const hsColour = hs >= 70 ? 'var(--green)' : hs >= 40 ? 'var(--amber)' : 'var(--red)';
+    const hsLabel = hs >= 70 ? 'Healthy' : hs >= 40 ? 'Caution' : 'At Risk';
+    $('riskScore').textContent = hs;
+    $('riskScore').style.color = hsColour;
+    $('riskMeterFill').style.width = hs + '%';
+    $('riskMeterFill').style.background = hsColour;
+    $('riskLabel').textContent = hsLabel;
+
+    const summaryParts = [];
+    const concW = (risk.concentrationWarnings || []).length;
+    const tsAlerts = (risk.trailingStopAlerts || []).length;
+    const tpAlerts = (risk.takeProfitAlerts || []).length;
+    const expTrades = (risk.expiredTrades || []).length;
+    if (concW) summaryParts.push(chip(concW + ' concentration', 'ca'));
+    if (tsAlerts) summaryParts.push(chip(tsAlerts + ' trailing-stop', 'cr'));
+    if (tpAlerts) summaryParts.push(chip(tpAlerts + ' take-profit', 'cg'));
+    if (expTrades) summaryParts.push(chip(expTrades + ' expired', 'cm'));
+    $('riskAlertsSummary').innerHTML = summaryParts.join('');
+  }
+
+  // Risk alerts detail
+  const allAlerts = [
+    ...(risk.trailingStopAlerts || []).map(a => ({
+      type: 'danger', icon: '🔻',
+      title: `${a.ticker} — Trailing Stop`,
+      detail: `Dropped ${a.dropFromPeak}% from peak ${fmt$(a.peakPrice)} → now ${fmt$(a.currentPrice)}`,
+    })),
+    ...(risk.takeProfitAlerts || []).map(a => ({
+      type: 'profit', icon: '💰',
+      title: `${a.ticker} — Take Profit`,
+      detail: `Up ${a.gainPct}% from buy ${fmt$(a.avgBuyPrice)} → now ${fmt$(a.currentPrice)}`,
+    })),
+    ...(risk.concentrationWarnings || []).map(a => ({
+      type: 'warn', icon: '⚖️',
+      title: a.ticker ? `${a.ticker} — Overweight` : `${a.sector} — Sector Heavy`,
+      detail: a.warning,
+    })),
+    ...(risk.expiredTrades || []).map(a => ({
+      type: 'info', icon: '⏰',
+      title: `${a.ticker} — Trade Expired`,
+      detail: a.expiredReason || 'Pending trade expired due to stale pricing',
+    })),
+  ];
+  if (allAlerts.length > 0) {
+    $('sec-risk-alerts').style.display = 'block';
+    $('riskAlertsBody').innerHTML = allAlerts.map(a =>
+      `<div class="alert-card alert-${a.type}">
+        <div style="font-weight:600;margin-bottom:2px">${a.icon} ${a.title}</div>
+        <div style="color:var(--muted)">${a.detail}</div>
+      </div>`
+    ).join('');
+  } else {
+    $('sec-risk-alerts').style.display = 'none';
+  }
+
+  // ── Technical Analysis ──────────────────────────────────────────────────
+  const tech = p.lastTechnicals || {};
+  const buyLow = tech.buyLowSignals || [];
+  const sellHigh = tech.sellHighSignals || [];
+  if (buyLow.length > 0 || sellHigh.length > 0) {
+    $('sec-technicals').style.display = 'block';
+    $('buyLowSignals').innerHTML = buyLow.length === 0
+      ? '<div class="empty" style="padding:12px">No buy-low signals</div>'
+      : buyLow.map(s => {
+          const techInfo = (tech.technicals || {})[s.ticker] || {};
+          const rsi = techInfo.rsi14;
+          return `<div class="alert-card alert-info">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span class="mono" style="font-weight:700;font-size:13px">${s.ticker}</span>
+              <span class="chip cg">${s.signal.replace('_',' ')}</span>
+            </div>
+            <div style="color:var(--muted);margin-top:3px">${s.detail}</div>
+            ${rsi ? `<div style="margin-top:4px"><span class="tech-pill" style="background:#10b98115;color:var(--green)">RSI ${rsi}</span></div>` : ''}
+          </div>`;
+        }).join('');
+    $('sellHighSignals').innerHTML = sellHigh.length === 0
+      ? '<div class="empty" style="padding:12px">No sell-high signals</div>'
+      : sellHigh.map(s => {
+          const techInfo = (tech.technicals || {})[s.ticker] || {};
+          const rsi = techInfo.rsi14;
+          return `<div class="alert-card alert-warn">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span class="mono" style="font-weight:700;font-size:13px">${s.ticker}</span>
+              <span class="chip cr">${s.signal.replace('_',' ')}</span>
+            </div>
+            <div style="color:var(--muted);margin-top:3px">${s.detail}</div>
+            ${rsi ? `<div style="margin-top:4px"><span class="tech-pill" style="background:#ef444415;color:var(--red)">RSI ${rsi}</span></div>` : ''}
+          </div>`;
+        }).join('');
+  } else {
+    $('sec-technicals').style.display = 'none';
+  }
+
+  // ── Earnings Calendar ──────────────────────────────────────────────────
+  const earnings = p.lastEarnings || {};
+  const events = earnings.events || [];
+  const earnWarn = earnings.warnings || [];
+  if (events.length > 0) {
+    $('sec-earnings').style.display = 'block';
+    $('earningsBody').innerHTML = events.map(e => {
+      const ic = {POSITIVE:'cg',NEGATIVE:'cr',NEUTRAL:'cm',UNKNOWN:'ca'}[e.impact]||'cm';
+      const ac = {SELL_BEFORE:'cr',BUY_BEFORE:'cg',HOLD_THROUGH:'ca',MONITOR:'cm'}[e.actionAdvice]||'cm';
+      const typeIcon = {EARNINGS:'📊',EX_DIVIDEND:'💵',AGM:'🏛️',CAPITAL_RAISE:'📈',TRADING_HALT:'⏸️'}[e.eventType]||'📅';
+      return `<div class="cal-event">
+        <div style="display:flex;align-items:center;gap:8px;min-width:0;flex:1">
+          <span style="font-size:16px">${typeIcon}</span>
+          <div style="min-width:0">
+            <div><span class="mono" style="font-weight:700">${e.ticker}</span> <span style="color:var(--muted)">${e.name||''}</span></div>
+            <div style="font-size:11px;color:var(--muted)">${e.detail||''}</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+          ${chip(e.eventType.replace('_',' '), ic)}
+          ${chip(e.actionAdvice?.replace('_',' ')||'', ac)}
+          <span class="cal-date">${e.eventDate||''}</span>
+        </div>
+      </div>`;
+    }).join('');
+    $('earningsWarnings').innerHTML = earnWarn.map(w =>
+      `<div class="alert-card alert-warn" style="font-size:11px">
+        <span class="mono" style="font-weight:700">${w.ticker}</span> — ${w.warning}
+      </div>`
+    ).join('');
+  } else {
+    $('sec-earnings').style.display = 'none';
+  }
+
+  // ── Insider Selling ────────────────────────────────────────────────────
+  const insiders = (news || {}).insiderSelling || [];
+  if (insiders.length > 0) {
+    $('sec-insider').style.display = 'block';
+    $('insiderBody').innerHTML = insiders.map(ins => {
+      const sc = {HIGH:'cr',MEDIUM:'ca',LOW:'cm'}[ins.severity]||'cm';
+      return `<div class="insider-item">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <span><span class="mono" style="font-weight:700;font-size:13px">${ins.ticker}</span> — <span style="color:var(--muted)">${ins.who}</span></span>
+          ${chip(ins.severity, sc)}
+        </div>
+        <div style="color:var(--red);font-weight:600">${ins.sharesValue}</div>
+        <div style="color:var(--muted);margin-top:2px">${ins.detail}</div>
+      </div>`;
+    }).join('');
+  } else {
+    $('sec-insider').style.display = 'none';
+  }
+
+  // ── Sector Performance (from news) ─────────────────────────────────────
+  const topSectors = (news || {}).topSectors || [];
+  const worstSectors = (news || {}).worstSectors || [];
+  if (topSectors.length > 0 || worstSectors.length > 0) {
+    let sectorHtml = '';
+    if (topSectors.length) sectorHtml += `<div style="margin-bottom:6px;display:flex;gap:4px;flex-wrap:wrap"><span style="font-size:10px;color:var(--muted);margin-right:4px">▲ Top:</span>${topSectors.map(s=>chip(s,'cg')).join('')}</div>`;
+    if (worstSectors.length) sectorHtml += `<div style="display:flex;gap:4px;flex-wrap:wrap"><span style="font-size:10px;color:var(--muted);margin-right:4px">▼ Worst:</span>${worstSectors.map(s=>chip(s,'cr')).join('')}</div>`;
+    const macroEl = $('macroText');
+    macroEl.innerHTML = sectorHtml + '<div style="border-top:1px solid var(--border);padding-top:8px;margin-top:8px">' + macroEl.innerHTML + '</div>';
+  }
+
   // Transactions
   const txs = p.transactions || [];
   $('txBody').innerHTML = txs.length === 0
@@ -727,7 +1105,7 @@ function render(p) {
 
   // Logs
   const logs = p.logs || [];
-  const vm = { ANALYSIS:'cc', NEWS:'cp', TRADE:'ca', EXECUTED:'cg', STOP_LOSS:'cr', DEPOSIT:'cc', REJECTED:'cr' };
+  const vm = { ANALYSIS:'cc', NEWS:'cp', TRADE:'ca', EXECUTED:'cg', STOP_LOSS:'cr', DEPOSIT:'cc', REJECTED:'cr', TECHNICAL:'cc', CALENDAR:'cp', RISK:'ca' };
   $('logFeed').innerHTML = logs.length === 0
     ? '<div class="empty">No activity yet</div>'
     : logs.slice(0,30).map(l => {
@@ -758,6 +1136,10 @@ async function fetchPortfolio() {
   if (sr.ok) {
     const s = await sr.json();
     portfolio.stopLossPct = s.stopLossPct;
+    portfolio.trailingStopPct = s.trailingStopPct;
+    portfolio.takeProfitPct = s.takeProfitPct;
+    portfolio.minTradeShares = s.minTradeShares;
+    portfolio.riskHealthScore = s.riskHealthScore;
     if (s.cycleHealth) portfolio.cycleHealth = s.cycleHealth;
   }
   return portfolio;
@@ -871,6 +1253,110 @@ function startCountdown() {
     $('rfill').style.width = ((cd / CFG.refresh) * 100) + '%';
     if (cd <= 0) { cd = CFG.refresh; $('rfill').style.width = '100%'; refresh().then(startCountdown); }
   }, 1000);
+}
+
+// ── Comfort Panel ────────────────────────────────────────────────────────────
+const COMFORT_KEY = 'daedalus-comfort';
+const COMFORT_DEFAULTS = { theme:'dark', font:'default', fontScale:1, motion:'on' };
+
+const THEMES = [
+  { id:'dark',         label:'Dark',  swatch:'#00d4ff' },
+  { id:'light',        label:'Light', swatch:'#2563eb' },
+  { id:'deuteranopia', label:'Deut.', swatch:'#0066cc' },
+  { id:'protanopia',   label:'Prot.', swatch:'#0077aa' },
+  { id:'tritanopia',   label:'Trit.', swatch:'#cc3366' },
+];
+const FONTS = [
+  { id:'default',      label:'Default' },
+  { id:'hyperlegible', label:'Hyperlegible' },
+  { id:'dyslexic',     label:'Dyslexic' },
+];
+const MOTIONS = [
+  { id:'on',      label:'On' },
+  { id:'reduced', label:'Reduced' },
+  { id:'off',     label:'Off' },
+];
+
+let comfort = { ...COMFORT_DEFAULTS };
+try {
+  const saved = localStorage.getItem(COMFORT_KEY);
+  if (saved) comfort = { ...COMFORT_DEFAULTS, ...JSON.parse(saved) };
+} catch {}
+
+function applyComfort() {
+  const root = document.documentElement;
+  // Theme
+  root.className = root.className.replace(/theme-\S+/g, '').trim();
+  root.classList.add('theme-' + comfort.theme);
+  // Font
+  root.classList.remove('font-dyslexic', 'font-hyperlegible');
+  if (comfort.font === 'dyslexic') root.classList.add('font-dyslexic');
+  if (comfort.font === 'hyperlegible') root.classList.add('font-hyperlegible');
+  // Scale
+  root.style.setProperty('--font-scale', String(comfort.fontScale));
+  $('scaleLabel').textContent = Math.round(comfort.fontScale * 100) + '%';
+  $('fontScale').value = comfort.fontScale;
+  // Motion
+  root.classList.remove('motion-reduced', 'motion-off');
+  if (comfort.motion === 'reduced') root.classList.add('motion-reduced');
+  if (comfort.motion === 'off') root.classList.add('motion-off');
+  // Persist
+  try { localStorage.setItem(COMFORT_KEY, JSON.stringify(comfort)); } catch {}
+  // Update grid active states
+  renderComfortGrids();
+}
+
+function renderComfortGrids() {
+  $('themeGrid').innerHTML = THEMES.map(t =>
+    `<button class="comfort-opt ${comfort.theme===t.id?'active':''}" onclick="setComfort('theme','${t.id}')">
+      <span class="comfort-swatch" style="background:${t.swatch}"></span><br>
+      <span style="font-size:9px">${t.label}</span>
+    </button>`
+  ).join('');
+  $('fontGrid').innerHTML = FONTS.map(f =>
+    `<button class="comfort-opt ${comfort.font===f.id?'active':''}" onclick="setComfort('font','${f.id}')">${f.label}</button>`
+  ).join('');
+  $('motionGrid').innerHTML = MOTIONS.map(m =>
+    `<button class="comfort-opt ${comfort.motion===m.id?'active':''}" onclick="setComfort('motion','${m.id}')">${m.label}</button>`
+  ).join('');
+}
+
+function setComfort(key, value) {
+  if (key === 'fontScale') value = parseFloat(value);
+  comfort[key] = value;
+  applyComfort();
+}
+
+function resetComfort() {
+  comfort = { ...COMFORT_DEFAULTS };
+  applyComfort();
+}
+
+function toggleComfort() {
+  const panel = $('comfortPanel');
+  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
+
+// Close comfort panel on outside click
+document.addEventListener('mousedown', e => {
+  const panel = $('comfortPanel');
+  const btn = $('comfortBtn');
+  if (panel.style.display !== 'none' && !panel.contains(e.target) && !btn.contains(e.target)) {
+    panel.style.display = 'none';
+  }
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') $('comfortPanel').style.display = 'none';
+});
+
+applyComfort();
+
+// ── Error expandable ─────────────────────────────────────────────────────────
+let errorsExpanded = false;
+function toggleErrors() {
+  errorsExpanded = !errorsExpanded;
+  $('errorExpand').style.display = errorsExpanded ? 'block' : 'none';
+  $('errorChevron').style.transform = errorsExpanded ? 'rotate(180deg)' : '';
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
