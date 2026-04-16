@@ -116,7 +116,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .btn-ghost:hover:not(:disabled){color:var(--text);border-color:rgba(255,255,255,0.25)}
 
 /* ── Wrap ── */
-.wrap{max-width:1100px;margin:0 auto;padding:16px 12px calc(80px + var(--safe-bottom))}
+html,body{max-width:100vw;overflow-x:hidden}
+.wrap{max-width:1100px;margin:0 auto;padding:16px 12px calc(80px + var(--safe-bottom));overflow-x:hidden}
 
 /* ── Stats ── */
 .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
@@ -127,13 +128,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .stat-sub{font-size:10px;color:var(--muted);margin-top:2px}
 
 /* ── Cycle health bar ── */
-.health-bar{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.health-bar{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;overflow:hidden}
 .health-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600}
 .health-dots{display:flex;gap:3px}
 .h-dot{width:8px;height:8px;border-radius:2px}
 
 /* ── Card ── */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:14px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;max-width:100%;overflow:hidden}
 .card-p{padding:16px}
 .card-header{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;margin-bottom:12px}
 
@@ -146,9 +147,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .spark-box{position:relative;height:50px}
 
 /* ── Grid layouts ── */
-.g2{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:12px}
+.g2{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:12px;min-width:0}
 @media(min-width:720px){.g2{grid-template-columns:1fr 1fr}}
-.g3{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:12px}
+.g3{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:12px;min-width:0}
 @media(min-width:560px){.g3{grid-template-columns:repeat(2,1fr)}}
 @media(min-width:900px){.g3{grid-template-columns:repeat(3,1fr)}}
 
@@ -244,7 +245,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .bnav-icon{font-size:18px;line-height:1}
 
 /* ── Section visibility (mobile tabs) ── */
-.section{margin-bottom:12px}
+.section{margin-bottom:12px;max-width:100%;min-width:0}
 
 /* ── Refresh countdown ── */
 .rbar{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted)}
@@ -564,19 +565,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 <!-- ── Bottom nav (mobile) ── -->
 <nav class="bottom-nav">
-  <button class="bnav-item active" onclick="scrollTo('sec-overview')">
+  <button class="bnav-item active" onclick="navTo('sec-overview',this)">
     <span class="bnav-icon">📊</span>Overview
   </button>
-  <button class="bnav-item" onclick="scrollTo('sec-holdings')">
+  <button class="bnav-item" onclick="navTo('sec-holdings',this)">
     <span class="bnav-icon">💼</span>Holdings
   </button>
-  <button class="bnav-item" onclick="scrollTo('sec-risk')">
+  <button class="bnav-item" onclick="navTo('sec-risk',this)">
     <span class="bnav-icon">🛡️</span>Risk
   </button>
-  <button class="bnav-item" onclick="scrollTo('sec-analyst')">
+  <button class="bnav-item" onclick="navTo('sec-analyst',this)">
     <span class="bnav-icon">🔍</span>Analyst
   </button>
-  <button class="bnav-item" onclick="scrollTo('sec-news')">
+  <button class="bnav-item" onclick="navTo('sec-news',this)">
     <span class="bnav-icon">📰</span>News
   </button>
 </nav>
@@ -661,11 +662,11 @@ function chip(t, cls) { return `<span class="chip ${cls}">${t}</span>`; }
 function showErr(m) { $('emsg').textContent = m; $('ebanner').style.display = 'flex'; }
 
 // ── Scroll helper ─────────────────────────────────────────────────────────────
-function scrollTo(id) {
+function navTo(id, btn) {
   const el = $(id);
   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   document.querySelectorAll('.bnav-item').forEach(b => b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  if (btn) btn.classList.add('active');
 }
 
 // ── Charts ───────────────────────────────────────────────────────────────────
