@@ -64,7 +64,7 @@
 }
 
 /* ── Font scale ── */
-:root { font-size: calc(16px * var(--font-scale)); }
+body { font-size: calc(14px * var(--font-scale)); }
 
 /* ── Motion ── */
 :root.motion-reduced *{transition-duration:0.01ms!important;animation-duration:0.01ms!important}
@@ -174,7 +174,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .sell-b{background:#ef444420;color:var(--red)}
 
 /* ── Chip ── */
-.chip{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;display:inline-block;white-space:nowrap}
+.chip{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;display:inline-block;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;vertical-align:middle}
 .cc{background:#00d4ff15;color:var(--cyan)}
 .cg{background:#10b98115;color:var(--green)}
 .cr{background:#ef444415;color:var(--red)}
@@ -197,11 +197,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .ltime{font-size:9px;color:var(--dim);flex-shrink:0;margin-left:auto;padding-top:2px;white-space:nowrap}
 
 /* ── Rec card ── */
-.rc{background:var(--surface2);border-radius:10px;padding:14px}
-.rt{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700}
-.rn{font-size:10px;color:var(--muted);margin-top:1px}
+.rc{background:var(--surface2);border-radius:10px;padding:14px;overflow:hidden;min-width:0}
+.rt{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis}
+.rn{font-size:10px;color:var(--muted);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rp{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;margin:8px 0 5px}
-.rth{font-size:11px;color:#94a3b8;line-height:1.5;margin-bottom:6px}
+.rth{font-size:11px;color:#94a3b8;line-height:1.5;margin-bottom:6px;word-wrap:break-word;overflow-wrap:break-word}
 
 /* ── Scrollable ── */
 .scroll-y{max-height:280px;overflow-y:auto}
@@ -264,7 +264,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .empty{text-align:center;padding:28px;color:var(--muted);font-size:12px;font-style:italic}
 
 /* ── Strategy box ── */
-.strategy-box{background:var(--surface2);border-radius:10px;padding:12px 14px;font-size:12px;color:#94a3b8;line-height:1.6;margin-bottom:10px;border-left:3px solid var(--cyan)}
+.strategy-box{background:var(--surface2);border-radius:10px;padding:12px 14px;font-size:12px;color:#94a3b8;line-height:1.6;margin-bottom:10px;border-left:3px solid var(--cyan);word-wrap:break-word;overflow-wrap:break-word;overflow:hidden}
 
 /* ── Risk health ── */
 .risk-bar{display:flex;align-items:center;gap:12px;margin-bottom:14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;flex-wrap:wrap}
@@ -455,7 +455,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   </div>
 
   <!-- ── Risk Alerts (trailing stops, take-profit, concentration) ── -->
-  <div class="card card-p section" id="sec-risk-alerts" style="display:none">
+  <div class="card card-p section" id="sec-risk-alerts">
     <div class="card-header">Risk Alerts</div>
     <div id="riskAlertsBody"></div>
   </div>
@@ -490,7 +490,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   </div>
 
   <!-- ── Technical Analysis ── -->
-  <div class="card card-p section" id="sec-technicals" style="display:none">
+  <div class="card card-p section" id="sec-technicals">
     <div class="card-header">Technical Analysis · Yahoo Finance</div>
     <div class="g2" style="margin-bottom:0">
       <div>
@@ -505,16 +505,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   </div>
 
   <!-- ── Earnings Calendar ── -->
-  <div class="card card-p section" id="sec-earnings" style="display:none">
+  <div class="card card-p section" id="sec-earnings">
     <div class="card-header">Earnings Calendar · Upcoming Events</div>
     <div id="earningsBody"></div>
     <div id="earningsWarnings" style="margin-top:8px"></div>
   </div>
 
   <!-- ── Insider Selling ── -->
-  <div class="card card-p section" id="sec-insider" style="display:none">
+  <div class="card card-p section" id="sec-insider">
     <div class="card-header" style="display:flex;align-items:center;gap:6px">
-      <span style="color:var(--red)">⚠</span> Insider Selling Detected
+      Insider Activity Monitor
     </div>
     <div id="insiderBody"></div>
   </div>
@@ -882,8 +882,8 @@ function render(p) {
           </div>
           <div class="rp">${fmt$(r.price)}</div>
           <div class="rth">${r.thesis||''}</div>
-          ${r.catalyst ? `<div style="font-size:10px;color:var(--cyan);margin-bottom:4px">→ ${r.catalyst}</div>` : ''}
-          <div style="font-size:10px;color:var(--muted)">${r.sector||''}${r.pe?' · P/E '+r.pe:''}${r.div?' · Div '+r.div:''}</div>
+          ${r.catalyst ? `<div style="font-size:10px;color:var(--cyan);margin-bottom:4px;word-wrap:break-word;overflow-wrap:break-word">→ ${r.catalyst.length>80?r.catalyst.slice(0,80)+'…':r.catalyst}</div>` : ''}
+          <div style="font-size:10px;color:var(--muted);word-wrap:break-word">${r.sector||''}${r.pe?' · P/E '+r.pe:''}${r.div?' · Div '+r.div:''}</div>
           ${r.risks?.length ? `<div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:3px">${r.risks.map(x=>chip(x,'cr')).join('')}</div>` : ''}
           ${r.insiderActivity && r.insiderActivity !== 'none detected' ? `<div style="margin-top:6px;font-size:10px;color:var(--red);border-top:1px solid var(--border);padding-top:6px">⚠ Insider: ${r.insiderActivity}</div>` : ''}
         </div>`;
@@ -972,7 +972,6 @@ function render(p) {
     })),
   ];
   if (allAlerts.length > 0) {
-    $('sec-risk-alerts').style.display = 'block';
     $('riskAlertsBody').innerHTML = allAlerts.map(a =>
       `<div class="alert-card alert-${a.type}">
         <div style="font-weight:600;margin-bottom:2px">${a.icon} ${a.title}</div>
@@ -980,7 +979,7 @@ function render(p) {
       </div>`
     ).join('');
   } else {
-    $('sec-risk-alerts').style.display = 'none';
+    $('riskAlertsBody').innerHTML = '<div class="empty">No risk alerts — portfolio looks healthy</div>';
   }
 
   // ── Technical Analysis ──────────────────────────────────────────────────
@@ -988,7 +987,6 @@ function render(p) {
   const buyLow = tech.buyLowSignals || [];
   const sellHigh = tech.sellHighSignals || [];
   if (buyLow.length > 0 || sellHigh.length > 0) {
-    $('sec-technicals').style.display = 'block';
     $('buyLowSignals').innerHTML = buyLow.length === 0
       ? '<div class="empty" style="padding:12px">No buy-low signals</div>'
       : buyLow.map(s => {
@@ -1018,7 +1016,8 @@ function render(p) {
           </div>`;
         }).join('');
   } else {
-    $('sec-technicals').style.display = 'none';
+    $('buyLowSignals').innerHTML = '<div class="empty" style="padding:12px">Run a cycle with updated backend to see signals</div>';
+    $('sellHighSignals').innerHTML = '<div class="empty" style="padding:12px">Run a cycle with updated backend to see signals</div>';
   }
 
   // ── Earnings Calendar ──────────────────────────────────────────────────
@@ -1026,7 +1025,6 @@ function render(p) {
   const events = earnings.events || [];
   const earnWarn = earnings.warnings || [];
   if (events.length > 0) {
-    $('sec-earnings').style.display = 'block';
     $('earningsBody').innerHTML = events.map(e => {
       const ic = {POSITIVE:'cg',NEGATIVE:'cr',NEUTRAL:'cm',UNKNOWN:'ca'}[e.impact]||'cm';
       const ac = {SELL_BEFORE:'cr',BUY_BEFORE:'cg',HOLD_THROUGH:'ca',MONITOR:'cm'}[e.actionAdvice]||'cm';
@@ -1052,13 +1050,13 @@ function render(p) {
       </div>`
     ).join('');
   } else {
-    $('sec-earnings').style.display = 'none';
+    $('earningsBody').innerHTML = '<div class="empty">Run a cycle with updated backend to see upcoming events</div>';
+    $('earningsWarnings').innerHTML = '';
   }
 
   // ── Insider Selling ────────────────────────────────────────────────────
   const insiders = (news || {}).insiderSelling || [];
   if (insiders.length > 0) {
-    $('sec-insider').style.display = 'block';
     $('insiderBody').innerHTML = insiders.map(ins => {
       const sc = {HIGH:'cr',MEDIUM:'ca',LOW:'cm'}[ins.severity]||'cm';
       return `<div class="insider-item">
@@ -1071,7 +1069,7 @@ function render(p) {
       </div>`;
     }).join('');
   } else {
-    $('sec-insider').style.display = 'none';
+    $('insiderBody').innerHTML = '<div class="empty">No insider selling detected</div>';
   }
 
   // ── Sector Performance (from news) ─────────────────────────────────────
